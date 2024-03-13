@@ -1,25 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+import Header from './components/Header'
+import MoviesList from './components/MoviesList'
+import Details from './components/Details'
+import Footer from './components/Footer'
+import { useState , useEffect } from 'react'
+import axios from 'axios'
+import { Route , Routes } from 'react-router-dom'
 
 function App() {
+
+  const [movies , setMovies] = useState([])
+
+  const getMovies = async ()=>{
+    const response = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=52ef927bbeb21980cd91386a29403c78&language=en`)
+    setMovies(response.data.results)
+  } //getMovies
+
+  const search = async (word)=>{
+    if( word === ""){
+      getMovies()
+    }
+    else{ 
+      const response = await axios.get(`https://api.themoviedb.org/3/search/movie?query=${word}&api_key=52ef927bbeb21980cd91386a29403c78&language=en`)
+      setMovies(response.data.results)
+    }
+  } //getMovies
+
+  useEffect( ()=>{
+    getMovies()
+  } , [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+    <Header search={search} />
+
+    <Routes>
+      <Route path='/' element={ <MoviesList movies={movies}/> } />
+      <Route path='/details/:id' element={ <Details/> } />
+    </Routes>
+    
+    <Footer/>
+    
     </div>
-  );
+    
+  )
 }
 
-export default App;
+export default App
