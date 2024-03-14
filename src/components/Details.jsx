@@ -16,7 +16,9 @@ function Details() {
 
   useEffect( ()=>{
     getMovieDetails()
-  } , [])
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  } , []);
 
   return (
     <section className="py-5 container">
